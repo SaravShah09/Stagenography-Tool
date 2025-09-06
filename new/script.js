@@ -1,4 +1,4 @@
-const BASE_URL = 'https://stagenography-tool1.onrender.com'; // your deployed backend URL
+// import axios from "axios";
 
 // Redirect to Signup
 window.goToSignup = function () {
@@ -12,16 +12,21 @@ window.loginUser = function () {
     let errorBox = document.getElementById("login-error");
     localStorage.setItem('email', email);
 
-    axios.post(`${BASE_URL}/login`, { email, password })
+
+    axios.post('https://stagenography-tool1.onrender.com/login', { email, password })
         .then(response => {
+            // console.log(response.data);
             generateOTP();
         })
         .catch(error => {
             console.log(error)
-            errorBox.textContent = error.response?.data?.message || "Invalid email or password";
+            errorBox.textContent = error.response.data.message || "Invalid email or password";
             return;
         });
 }
+
+
+
 
 // Signup User
 window.signupUser = function () {
@@ -32,9 +37,12 @@ window.signupUser = function () {
     const confirmPassword = document.getElementById("signup-confirm").value;
     const errorElement = document.getElementById("signup-error");
 
+    // Clear previous error message
     errorElement.innerText = "";
 
+    // Password validation pattern
     const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
     const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
     if (!emailPattern.test(email)) {
@@ -60,21 +68,33 @@ window.signupUser = function () {
     const generatedOTP = Math.floor(1000 + Math.random() * 9000);
     localStorage.setItem("generatedOTP", generatedOTP);
 
-    axios.post(`${BASE_URL}/otp`, { email, otp: generatedOTP })
+    axios.post('https://stagenography-tool1.onrender.com/otp', { email, otp: generatedOTP })
         .then(response => {
+            // console.log(response.data);
             console.log("OTP sent");
         })
         .catch(error => {
             errorElement.textContent = "Error in sending OTP";
             console.log("Send otp failed: ", error);
             return;
-        });
+        })
 
-    const userData = { name, dob, email, password, confirmPassword };
+    // alert(`Your OTP is: ${generatedOTP}`); // Simulating email sending
+    const userData = {
+        name,
+        dob,
+        email,
+        password,
+        confirmPassword
+    };
+
+    // Save the object to localStorage by converting it to a JSON string
     localStorage.setItem('userData', JSON.stringify(userData));
 
     window.location.href = "signupotp.html";
+
 }
+
 
 // Generate OTP and Redirect to OTP Page
 window.generateOTP = function () {
@@ -82,34 +102,47 @@ window.generateOTP = function () {
     localStorage.setItem('generatedOTP', generatedOTP);
     const email = localStorage.getItem('email');
     let errorBox = document.getElementById("login-error");
-
-    axios.post(`${BASE_URL}/otp`, { email, otp: generatedOTP })
+    console.log("email", email);
+    console.log("otp", generatedOTP);
+    axios.post('https://stagenography-tool1.onrender.com/otp', { email, otp: generatedOTP })
         .then(response => {
+            // console.log(response.data);
             console.log("OTP sent");
         })
         .catch(error => {
             const errorMsg = "Signup failed";
             errorBox.textContent = errorMsg;
-            console.error("Error response data:", error.response?.data);
+            // console.log("Send otp failed: ", error);
+            console.error("Error response data:", error.response.data);
+            console.error("Error response status:", error.response.status);
+            console.error("Error response headers:", error.response.headers);
             return;
-        });
-
+        })
+    console.log("axios completed");
+    // alert(`Your OTP is: ${generatedOTP}`); // Simulating email sending
     window.location.href = "otp.html";
 }
 
 window.verifySignupOTP = function () {
     const userDataString = localStorage.getItem('userData');
 
+    // If user data is found, parse it into an object
     if (userDataString) {
         const userData = JSON.parse(userDataString);
-        const { name, dob, email, password } = userData;
+
+        const name = userData.name;
+        const dob = userData.dob;
+        const email = userData.email;
+        const password = userData.password;
 
         let enteredOTP = document.getElementById("otp-input").value;
         let errorBox = document.getElementById("otp-error");
         const generatedOTP = localStorage.getItem('generatedOTP');
-
+        // console.log("generatedOPT=", generatedOTP);
+        // console.log("enteredotp=", enteredOTP);
         if (enteredOTP == generatedOTP) {
-            axios.post(`${BASE_URL}/signup`, { email, password, name, dob, role: "user" })
+            // alert("OTP Verified! Redirecting to homepage...");
+            axios.post('https://stagenography-tool1.onrender.com/signup', { email, password, name, dob, role: "user" })
                 .then(response => {
                     localStorage.setItem('email', email);
                     console.log("Signup Successful");
@@ -118,6 +151,7 @@ window.verifySignupOTP = function () {
                 .catch(error => {
                     console.error('Signup failed:', error);
                     errorBox.textContent = "Signup failed";
+                    // window.location.href = "index.html";
                 });
         } else {
             errorBox.textContent = "Incorrect OTP! Try again.";
@@ -132,10 +166,24 @@ window.verifyOTP = function () {
     let enteredOTP = document.getElementById("otp-input").value;
     let errorBox = document.getElementById("otp-error");
     const generatedOTP = localStorage.getItem('generatedOTP');
-
+    console.log(generatedOTP);
     if (enteredOTP == generatedOTP) {
         window.location.href = "homepage.html";
     } else {
         errorBox.textContent = "Incorrect OTP! Try again.";
     }
 }
+
+
+// document.getElementById("forgot-password-form").addEventListener("submit", function (event) {
+//     event.preventDefault();
+
+//     const email = document.getElementById("email").value.trim();
+
+//     if (email === "") {
+//         alert("Please enter a valid email.");
+//         return;
+//     }
+
+//     alert("A password reset link has been sent to your email.");
+// });
