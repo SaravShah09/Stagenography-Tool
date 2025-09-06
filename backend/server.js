@@ -8,7 +8,7 @@ const bcrypt = require('bcryptjs');
 
 const app = express();
 app.use(cors({
-    origin: ["https://steganotool1.netlify.app/"],
+    origin: ["https://saravstageno.netlify.app/"],
     methods: ["POST", "GET"],
     credentials: true
 }));
