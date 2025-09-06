@@ -1,0 +1,222 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    background: linear-gradient(to right, #f0f4ff, #e0f7fa);
+    /* Clean soft gradient */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    flex-direction: column;
+    opacity: 0.98;
+    position: relative;
+}
+
+/* Optional circuit texture fade overlay */
+body::before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: url('https://www.transparenttextures.com/patterns/circuit-board.png');
+    opacity: 0.02;
+    /* Barely visible for subtle tech feel */
+    z-index: -1;
+}
+
+/* Animated Heading */
+@keyframes moveHeading {
+    0% {
+        left: 0;
+    }
+
+    100% {
+        left: calc(100% - 550px);
+    }
+}
+
+.heading {
+    color: #1e3a8a;
+    font-size: 50px;
+    font-weight: 600;
+    text-align: center;
+    position: absolute;
+    top: 10px;
+    animation: moveHeading 5s linear infinite;
+}
+
+.underline {
+    width: 100%;
+    height: 5px;
+    background: #1e3a8a;
+    margin: 8px 0 20px;
+    position: absolute;
+    top: 70px;
+}
+
+/* Shared container styles */
+.container,
+.forgot-password-container {
+    width: 800px;
+    background: #ffffff;
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0px 6px 20px rgba(0, 0, 0, 0.12);
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
+    margin-top: 100px;
+    position: relative;
+    border: 2px solid #b0c4de;
+}
+
+.forgot-password-container {
+    flex-direction: column;
+    width: 400px;
+    padding: 30px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* Left Side Image */
+.left {
+    flex: 1;
+    background: #f3f4f6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.left img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+/* Right Side Login */
+.right {
+    flex: 1;
+    padding: 40px;
+    text-align: center;
+    background: #ffffff;
+}
+
+.right h2,
+.forgot-password-container h2 {
+    color: #1e3a8a;
+    font-weight: 600;
+    margin-bottom: 20px;
+    font-size: 24px;
+}
+
+.forgot-password-container p {
+    font-size: 14px;
+    color: #444;
+    margin-bottom: 20px;
+}
+
+/* Input Styles */
+.input-box {
+    display: flex;
+    align-items: center;
+    background: #f9fafb;
+    padding: 12px 15px;
+    margin: 10px 0;
+    border-radius: 10px;
+    border: 1px solid #e2e8f0;
+    transition: 0.3s ease-in-out;
+}
+
+.input-box:focus-within {
+    border-color: #0077b6;
+    background: #ffffff;
+}
+
+.input-box i {
+    margin-right: 10px;
+    color: #0077b6;
+}
+
+.input-box input {
+    border: none;
+    background: transparent;
+    outline: none;
+    flex: 1;
+    font-size: 16px;
+}
+
+/* Buttons */
+.btn {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, #0077b6, #00b4d8);
+    color: white;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    margin-top: 10px;
+    box-shadow: 0px 5px 15px rgba(0, 183, 255, 0.3);
+    transition: 0.3s;
+}
+
+.btn:hover {
+    background: linear-gradient(135deg, #00b4d8, #0077b6);
+    box-shadow: 0px 7px 20px rgba(0, 183, 255, 0.35);
+}
+
+/* Signup button */
+.signup {
+    background: linear-gradient(135deg, #fca311, #f3722c);
+}
+
+.signup:hover {
+    background: linear-gradient(135deg, #f3722c, #fca311);
+}
+
+/* Forgot Password */
+.forgot-password {
+    display: block;
+    text-align: right;
+    margin: 10px 0 10px auto;
+    color: #0077b6;
+    text-decoration: none;
+    font-size: 16px;
+    width: fit-content;
+}
+
+.back-to-login {
+    display: block;
+    margin-top: 15px;
+    color: #0077b6;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.back-to-login:hover {
+    text-decoration: underline;
+}
+
+/* Error Message */
+.error {
+    color: #e63946;
+    margin-top: 5px;
+}
+
+/* Footer */
+footer {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #ffffff;
+    text-align: center;
+}

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OTP Verification</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="adminLogin.css">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script type="module" src="adminScript.js"></script>
+</head>
+
+<body class="otp-page">
+    <!-- Particles Animation -->
+    <div class="particles">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+    </div>
+
+    <div class="main-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo-section">
+                <div class="logo-icon">🔐</div>
+                <h1 class="heading">SecureAuth</h1>
+            </div>
+            <div class="underline"></div>
+            <p class="subtitle">Verification Portal</p>
+        </div>
+
+        <!-- OTP Container -->
+        <div class="otp-container">
+            <div class="otp-box">
+                <!-- OTP Icon -->
+                <div class="otp-icon-container">
+                    <div class="otp-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                </div>
+
+                <!-- OTP Header -->
+                <div class="otp-header">
+                    <h2>Enter OTP</h2>
+                    <p>We have sent a 6-digit verification code to the admin email address. Please enter it below to continue.</p>
+                </div>
+
+                <!-- OTP Form -->
+                <form class="otp-form">
+                    <div class="input-group">
+                        <div class="input-box">
+                            <i class="fas fa-key"></i>
+                            <input type="number" id="otp-input" placeholder="Enter 6-digit OTP" maxlength="6">
+                        </div>
+                    </div>
+
+                    <p id="otp-error" class="error"></p>
+
+                    <div class="otp-actions">
+                        <button type="button" id="verifyOTP" class="btn primary" onclick="verifyOTP()">
+                            <i class="fas fa-check-circle"></i>
+                            Verify OTP
+                        </button>
+
+                        <div class="resend-section">
+                            <p class="resend-text">Didn't receive the code?</p>
+                            <button type="button" class="resend-btn">
+                                <i class="fas fa-redo"></i>
+                                Resend OTP
+                            </button>
+                        </div>
+                    </div>
+                </form>
+
+                <!-- Help Section -->
+                <div class="help-section">
+                    <div class="help-item">
+                        <i class="fas fa-info-circle"></i>
+                        <span>Check your spam folder if you don't see the email</span>
+                    </div>
+                    <div class="help-item">
+                        <i class="fas fa-clock"></i>
+                        <span>OTP expires in 10 minutes</span>
+                    </div>
+                </div>
+
+                <!-- Back Section -->
+                <div class="back-section">
+                    <a href="javascript:history.back()" class="back-link">
+                        <i class="fas fa-arrow-left"></i>
+                        Back to Login
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>&copy; 2024 SecureAuth. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+
+</html>

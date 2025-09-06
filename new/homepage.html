@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Steganography Tool</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="homepage.css">
+</head>
+
+<body class="homepage-page">
+    <!-- Particles Animation -->
+    <div class="particles">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+    </div>
+
+    <div class="main-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo-section">
+                <i class="fas fa-user-secret logo-icon"></i>
+                <h1 class="heading">Steganography Tool</h1>
+            </div>
+            <div class="underline"></div>
+            <p class="subtitle">Hide and reveal messages in media files</p>
+        </div>
+
+        <!-- Homepage Container -->
+        <div class="homepage-container">
+            <div class="homepage-box">
+                <!-- Back Button -->
+                <a href="index.html" class="back-arrow">
+                    <i class="fas fa-arrow-left"></i>
+                    <span>Back to Login</span>
+                </a>
+
+                <div class="tool-header">
+                    <div class="tool-icon">
+                        <i class="fas fa-eye-slash"></i>
+                    </div>
+                    <h2>Select Your Options</h2>
+                    <p>Choose media type and operation to perform steganography</p>
+                </div>
+
+                <!-- Media Type Selection -->
+                <div class="selection-section">
+                    <div class="input-group">
+                        <label for="media-type" class="input-label">
+                            <i class="fas fa-file-alt"></i>
+                            Select Media Type
+                        </label>
+                        <div class="select-wrapper">
+                            <select id="media-type" class="media-select">
+                                <option value="image">
+                                    <i class="fas fa-image"></i> Image Files
+                                </option>
+                                <option value="audio">
+                                    <i class="fas fa-music"></i> Audio Files
+                                </option>
+                                <option value="video">
+                                    <i class="fas fa-video"></i> Video Files
+                                </option>
+                            </select>
+                            <i class="fas fa-chevron-down select-arrow"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="button-group">
+                    <button class="btn primary" onclick="goToEncrypt()">
+                        <i class="fas fa-lock"></i>
+                        Encrypt Message
+                    </button>
+                    <button class="btn secondary" onclick="goToDecrypt()">
+                        <i class="fas fa-unlock"></i>
+                        Decrypt Message
+                    </button>
+                </div>
+
+                <!-- Feature Info -->
+                <div class="feature-info">
+                    <div class="feature-item">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>Secure encryption algorithms</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-file-image"></i>
+                        <span>Multiple media format support</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-eye-slash"></i>
+                        <span>Invisible message embedding</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>&copy; 2024 Steganography Tool. Secure your messages.</p>
+        </div>
+    </div>
+
+    <script>
+        const email = localStorage.getItem('email');
+        console.log(email)
+        if (!email || email === "") {
+            window.location.href = "index.html";
+        }
+
+        function goToEncrypt() {
+            const type = document.getElementById("media-type").value;
+            localStorage.setItem("mediaType", type);
+            window.location.href = "encrypt.html";
+        }
+
+        function goToDecrypt() {
+            const type = document.getElementById("media-type").value;
+            localStorage.setItem("mediaType", type);
+            window.location.href = "decrypt.html";
+        }
+
+        // Add smooth animations on load
+        window.addEventListener('load', () => {
+            const elements = document.querySelectorAll('.homepage-box > *');
+            elements.forEach((el, index) => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    el.style.transition = 'all 0.5s ease';
+                    el.style.opacity = '1';
+                    el.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+        });
+    </script>
+</body>
+
+</html>

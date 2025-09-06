@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OTP Verification</title>
+    <link rel="stylesheet" href="combined-styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script type="module" src="script.js"></script>
+</head>
+
+<body class="otp-page">
+    <!-- Background particles effect -->
+    <div class="particles">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+    </div>
+
+    <div class="main-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo-section">
+                <i class="fas fa-shield-alt logo-icon"></i>
+                <h1 class="heading">Security Verification</h1>
+            </div>
+            <div class="underline"></div>
+            <p class="subtitle">Verify your identity to proceed</p>
+        </header>
+
+        <!-- OTP Container -->
+        <div class="otp-container">
+            <div class="otp-box">
+                <div class="otp-icon-container">
+                    <div class="otp-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                </div>
+
+                <div class="otp-header">
+                    <h2>Enter Verification Code</h2>
+                    <p>We've sent a 4-digit verification code to your email address. Please enter it below to continue.</p>
+                </div>
+
+                <div class="otp-form">
+                    <!-- OTP Input Fields -->
+                    <div class="otp-inputs">
+                        <input type="text" class="otp-digit" maxlength="1" data-index="0">
+                        <input type="text" class="otp-digit" maxlength="1" data-index="1">
+                        <input type="text" class="otp-digit" maxlength="1" data-index="2">
+                        <input type="text" class="otp-digit" maxlength="1" data-index="3">
+                    </div>
+
+                    <!-- Hidden input for compatibility with existing code -->
+                    <input type="hidden" id="otp-input">
+
+                    <p id="otp-error" class="error"></p>
+
+                    <div class="otp-actions">
+                        <button id="verifyOTP" class="btn primary" onclick="handleVerifyOTP()">
+                            <i class="fas fa-check-circle" id="verify-icon"></i>
+                            <span id="verify-text">Verify Code</span>
+                        </button>
+
+                        <div class="resend-section">
+                            <p class="resend-text">Didn't receive the code?</p>
+                            <button type="button" class="resend-btn" onclick="resendOTP()">
+                                <i class="fas fa-redo"></i>
+                                Resend Code
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="help-section">
+                        <div class="help-item">
+                            <i class="fas fa-clock"></i>
+                            <span>Code expires in 5 minutes</span>
+                        </div>
+                        <div class="help-item">
+                            <i class="fas fa-info-circle"></i>
+                            <span>Check your spam folder if you don't see the email</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="back-section">
+                    <a href="index.html" class="back-link">
+                        <i class="fas fa-arrow-left"></i>
+                        Back to Login
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>&copy; 2024 Steganography Tool. Protecting your digital privacy.</p>
+        </footer>
+    </div>
+
+    <script>
+        // Enhanced OTP input handling
+        document.addEventListener('DOMContentLoaded', function() {
+            const otpInputs = document.querySelectorAll('.otp-digit');
+            const hiddenInput = document.getElementById('otp-input');
+            
+            otpInputs.forEach((input, index) => {
+                input.addEventListener('input', function(e) {
+                    // Only allow numbers
+                    this.value = this.value.replace(/[^0-9]/g, '');
+                    
+                    // Update hidden input
+                    updateHiddenInput();
+                    
+                    // Move to next input
+                    if (this.value && index < otpInputs.length - 1) {
+                        otpInputs[index + 1].focus();
+                    }
+                });
+                
+                input.addEventListener('keydown', function(e) {
+                    // Handle backspace
+                    if (e.key === 'Backspace' && !this.value && index > 0) {
+                        otpInputs[index - 1].focus();
+                    }
+                    
+                    // Handle enter key
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        handleVerifyOTP();
+                    }
+                });
+                
+                input.addEventListener('paste', function(e) {
+                    e.preventDefault();
+                    const pastedData = e.clipboardData.getData('text').replace(/[^0-9]/g, '');
+                    
+                    if (pastedData.length === 4) {
+                        otpInputs.forEach((inp, idx) => {
+                            inp.value = pastedData[idx] || '';
+                        });
+                        updateHiddenInput();
+                        otpInputs[3].focus();
+                    }
+                });
+            });
+            
+            function updateHiddenInput() {
+                const otpValue = Array.from(otpInputs).map(input => input.value).join('');
+                hiddenInput.value = otpValue;
+            }
+            
+            // Focus first input on load
+            otpInputs[0].focus();
+        });
+
+        // Enhanced verify function with loading state
+        function handleVerifyOTP() {
+            const verifyButton = document.getElementById('verifyOTP');
+            const verifyIcon = document.getElementById('verify-icon');
+            const verifyText = document.getElementById('verify-text');
+            const errorBox = document.getElementById('otp-error');
+            const otpInputs = document.querySelectorAll('.otp-digit');
+            
+            // Get OTP value
+            const otpValue = Array.from(otpInputs).map(input => input.value).join('');
+            
+            // Validation
+            if (otpValue.length !== 4) {
+                errorBox.textContent = 'Please enter the complete 4-digit code';
+                return;
+            }
+            
+            // Show loading state
+            verifyButton.disabled = true;
+            verifyIcon.className = 'fas fa-spinner fa-spin';
+            verifyText.textContent = 'Verifying...';
+            errorBox.textContent = '';
+            
+            // Update hidden input for compatibility
+            document.getElementById('otp-input').value = otpValue;
+            
+            // Call original verify function
+            try {
+                verifyOTP();
+            } catch (error) {
+                console.error('OTP verification error:', error);
+                errorBox.textContent = 'An error occurred during verification. Please try again.';
+                resetVerifyButton();
+            }
+        }
+
+        // Reset verify button to original state
+        function resetVerifyButton() {
+            const verifyButton = document.getElementById('verifyOTP');
+            const verifyIcon = document.getElementById('verify-icon');
+            const verifyText = document.getElementById('verify-text');
+            
+            verifyButton.disabled = false;
+            verifyIcon.className = 'fas fa-check-circle';
+            verifyText.textContent = 'Verify Code';
+        }
+
+        // Resend OTP function
+        function resendOTP() {
+            const resendBtn = document.querySelector('.resend-btn');
+            const originalText = resendBtn.innerHTML;
+            
+            resendBtn.disabled = true;
+            resendBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+            
+            // Clear current inputs
+            document.querySelectorAll('.otp-digit').forEach(input => {
+                input.value = '';
+            });
+            document.getElementById('otp-input').value = '';
+            document.getElementById('otp-error').textContent = '';
+            
+            // Simulate resend (you can integrate with your backend here)
+            setTimeout(() => {
+                // Call your generateOTP function or resend logic here
+                if (typeof generateOTP === 'function') {
+                    generateOTP();
+                }
+                
+                resendBtn.disabled = false;
+                resendBtn.innerHTML = originalText;
+                
+                // Show success message
+                const errorBox = document.getElementById('otp-error');
+                errorBox.style.color = 'var(--success-color)';
+                errorBox.textContent = 'New verification code sent to your email';
+                
+                setTimeout(() => {
+                    errorBox.textContent = '';
+                    errorBox.style.color = 'var(--error-color)';
+                }, 3000);
+                
+                // Focus first input
+                document.querySelector('.otp-digit').focus();
+            }, 2000);
+        }
+
+        // Override original verifyOTP to handle button reset
+        const originalVerifyOTP = window.verifyOTP;
+        window.verifyOTP = function() {
+            const enteredOTP = document.getElementById("otp-input").value;
+            const errorBox = document.getElementById("otp-error");
+            const generatedOTP = localStorage.getItem('generatedOTP');
+            
+            console.log(generatedOTP);
+            
+            if (enteredOTP == generatedOTP) {
+                window.location.href = "homepage.html";
+            } else {
+                errorBox.textContent = "Incorrect OTP! Try again.";
+                resetVerifyButton();
+                
+                // Clear inputs and focus first
+                document.querySelectorAll('.otp-digit').forEach(input => {
+                    input.value = '';
+                });
+                document.querySelector('.otp-digit').focus();
+            }
+        }
+    </script>
+
+</body>
+
+</html>

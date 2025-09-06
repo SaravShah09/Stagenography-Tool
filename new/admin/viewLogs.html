@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>View Logs</title>
+
+  <!-- Font Awesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <link rel="stylesheet" href="viewLogs.css" />
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js" defer></script>
+</head>
+<body class="admin-page">
+  <div class="main-container">
+    <div class="admin-container">
+      <div class="admin-header">
+        <div class="logo-section">
+          <div class="admin-icon-container">
+            <div class="admin-icon">
+              <i class="fas fa-file-alt" aria-hidden="true"></i>
+            </div>
+          </div>
+          <div>
+            <h2 class="heading">Log History</h2>
+            <div class="underline"></div>
+            <p class="subtitle">View and filter user logs. Dangerous messages are highlighted.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="filter-section">
+        <div class="filter-group">
+          <div class="filter-item">
+            <i class="fas fa-envelope" aria-hidden="true"></i>
+            <input type="text" id="filter-email" placeholder="Filter by email" aria-label="Filter by email">
+          </div>
+          <div class="filter-item">
+            <i class="fas fa-flag" aria-hidden="true"></i>
+            <select id="filter-flag" aria-label="Filter flagged logs">
+              <option value="all">All Logs</option>
+              <option value="flagged">Red Flagged</option>
+            </select>
+          </div>
+          <button class="admin-btn primary filter-btn" id="apply-filters">
+            <i class="fas fa-filter" aria-hidden="true"></i>
+            Filter
+          </button>
+          <button class="admin-btn secondary" id="clear-filters">
+            <i class="fas fa-eraser" aria-hidden="true"></i>
+            Clear
+          </button>
+        </div>
+      </div>
+
+      <div id="status" class="no-logs" aria-live="polite"></div>
+
+      <div id="logs-container" class="logs-container" role="region" aria-label="Logs list">
+        <!-- populated by JS -->
+      </div>
+
+      <div class="footer">
+        <p>Logs fetched from server. Authentication via localStorage email check.</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const email = localStorage.getItem('email');
+    if (!email) {
+      window.location.href = "../index.html";
+    }
+
+    let allLogs = [];
+
+    function isDangerousMessage(message) {
+      if (!message || typeof message !== 'string') return false;
+      const keywords = ["bomb", "terrorist", "murder", "attack"];
+      return keywords.some(keyword => message.toLowerCase().includes(keyword));
+    }
+
+    function encryptMessage(message) {
+      try {
+        return btoa(unescape(encodeURIComponent(message || '')));
+      } catch (err) {
+        console.error("Error encrypting message:", err);
+        return message || '';
+      }
+    }
+
+    function displayLogs(logs) {
+      const container = document.getElementById('logs-container');
+      container.innerHTML = "";
+
+      if (!logs || logs.length === 0) {
+        document.getElementById('status').innerHTML = '<div class="no-logs"><i class="fas fa-info-circle"></i><p>No logs to display.</p></div>';
+        return;
+      } else {
+        document.getElementById('status').textContent = '';
+      }
+
+      logs.forEach(log => {
+        const isFlagged = isDangerousMessage(log.message || '');
+        const logItem = document.createElement('div');
+        logItem.classList.add('log-item');
+        if (isFlagged) logItem.classList.add('red-flag');
+
+        const encryptedMessage = encryptMessage(log.message);
+        const media = log.mediaType || "Text";
+        const type = log.type || 'N/A';
+        const emailDisplay = log.email || 'Unknown';
+        const timeStr = log.time ? new Date(log.time).toLocaleString() : 'Unknown time';
+
+        logItem.innerHTML = `
+          <div class="log-header">
+            <div class="log-email">
+              <i class="fas fa-envelope"></i>
+              <span> ${emailDisplay}</span>
+            </div>
+            <div class="log-status ${isFlagged ? 'flagged' : 'normal'}">
+              ${isFlagged ? 'Flagged' : 'Normal'}
+            </div>
+          </div>
+
+          <div class="log-details">
+            <div class="log-type">
+              <i class="fas fa-lock"></i>
+              <span>${type}</span>
+            </div>
+            <div class="log-media">
+              <i class="fas fa-file"></i>
+              <span>${media}</span>
+            </div>
+          </div>
+
+          <div class="log-message">
+            <div class="message-header">
+              <i class="fas fa-comment"></i>
+              <span>Message</span>
+            </div>
+            <div class="message-content">
+              ${encryptedMessage}
+              ${isFlagged ? `<div class="original-message"><strong>Original:</strong> ${log.message}</div>` : ''}
+            </div>
+          </div>
+
+          <div class="log-time">
+            <i class="fas fa-clock"></i>
+            <span>${timeStr}</span>
+          </div>
+        `;
+        container.appendChild(logItem);
+      });
+    }
+
+    function applyFilters() {
+      const emailFilter = document.getElementById('filter-email').value.trim().toLowerCase();
+      const flagFilter = document.getElementById('filter-flag').value;
+
+      let filteredLogs = allLogs;
+
+      if (emailFilter) {
+        filteredLogs = filteredLogs.filter(log => (log.email || '').toLowerCase().includes(emailFilter));
+      }
+
+      if (flagFilter === "flagged") {
+        filteredLogs = filteredLogs.filter(log => isDangerousMessage(log.message || ''));
+      }
+
+      displayLogs(filteredLogs);
+    }
+
+    function clearFilters() {
+      document.getElementById('filter-email').value = '';
+      document.getElementById('filter-flag').value = 'all';
+      displayLogs(allLogs);
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+      document.getElementById('apply-filters').addEventListener('click', applyFilters);
+      document.getElementById('clear-filters').addEventListener('click', clearFilters);
+
+      axios.get('http://localhost:3001/logs')
+        .then(response => {
+          allLogs = Array.isArray(response.data) ? response.data : [];
+          document.getElementById('status').textContent = '';
+          displayLogs(allLogs);
+        })
+        .catch(error => {
+          console.error("Error fetching logs:", error);
+          document.getElementById('logs-container').innerHTML = "<div class='error-message'><i class='fas fa-exclamation-triangle'></i><p>Error loading logs.</p></div>";
+        });
+    });
+  </script>
+</body>
+</html>

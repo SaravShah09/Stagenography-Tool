@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - Create Account</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="signup.css">
+</head>
+
+<body class="signup-page">
+    <!-- Particles Animation -->
+    <div class="particles">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+    </div>
+
+    <div class="main-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo-section">
+                <i class="fas fa-user-plus logo-icon"></i>
+                <h1 class="heading">Create Account</h1>
+            </div>
+            <div class="underline"></div>
+            <p class="subtitle">Join us and start your journey</p>
+        </div>
+
+        <!-- Signup Container -->
+        <div class="signup-container">
+            <div class="signup-box">
+                <div class="form-header">
+                    <h2>Sign Up</h2>
+                    <p>Fill in your details to create an account</p>
+                </div>
+
+                <form class="signup-form">
+                    <div class="input-group">
+                        <div class="input-box">
+                            <i class="fas fa-user"></i>
+                            <input type="text" id="signup-name" placeholder="Enter your full name" required>
+                            <div class="focus-border"></div>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <div class="input-box">
+                            <i class="fas fa-calendar-alt"></i>
+                            <input type="date" id="signup-dob" required>
+                            <div class="focus-border"></div>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <div class="input-box">
+                            <i class="fas fa-envelope"></i>
+                            <input type="email" id="signup-email" placeholder="Enter your email" required>
+                            <div class="focus-border"></div>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <div class="input-box">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" id="signup-password" placeholder="Create password" required>
+                            <button type="button" class="toggle-password" onclick="togglePassword('signup-password')">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <div class="focus-border"></div>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <div class="input-box">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" id="signup-confirm" placeholder="Confirm password" required>
+                            <button type="button" class="toggle-password" onclick="togglePassword('signup-confirm')">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <div class="focus-border"></div>
+                        </div>
+                    </div>
+
+                    <div id="signup-error" class="error"></div>
+
+                    <div class="button-group">
+                        <button type="button" class="btn primary" onclick="signupUser()">
+                            <i class="fas fa-user-plus"></i>
+                            Create Account
+                        </button>
+                    </div>
+
+                    <div class="divider">
+                        <span>Already have an account?</span>
+                    </div>
+
+                    <div class="login-section">
+                        <a href="index.html" class="login-link">
+                            <i class="fas fa-sign-in-alt"></i>
+                            Sign In Instead
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>&copy; 2024 Your Company. All rights reserved.</p>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script type="module" src="script.js"></script>
+    <script>
+        // Password toggle functionality
+        function togglePassword(inputId) {
+            const input = document.getElementById(inputId);
+            const button = input.nextElementSibling;
+            const icon = button.querySelector('i');
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Decrypt Message</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="decrypt.css">
+    
+</head>
+
+<body class="homepage-page">
+    <!-- Particles Animation -->
+    <div class="particles">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+    </div>
+
+    <div class="decrypt-container">
+        <h1><i class="fas fa-unlock" style="margin-right: 0.5rem;"></i>Decrypt Message</h1>
+        <a href="homepage.html" class="back-arrow">
+            <i class="fas fa-arrow-left"></i>
+        </a>
+        
+        <div class="file-upload-wrapper">
+            <input type="file" id="imageUpload">
+            <label for="imageUpload" class="file-upload-label">
+                <i class="fas fa-cloud-upload-alt file-upload-icon"></i>
+                <div class="file-upload-text">
+                    <span class="highlight">Click to upload</span> or drag and drop<br>
+                    <small>Select your encrypted media file</small>
+                </div>
+            </label>
+        </div>
+        
+        <div class="input-wrapper">
+            <div class="input-box">
+                <i class="fas fa-key"></i>
+                <input type="password" id="key" placeholder="Enter decryption key">
+            </div>
+        </div>
+        
+        <button class="btn" onclick="decryptMessage()">
+            <i class="fas fa-unlock-alt"></i>
+            Decrypt Message
+        </button>
+        
+        <div class="message-display">
+            <p id="decodedMessage"></p>
+        </div>
+    </div>
+
+    <script>
+        const email = localStorage.getItem('email');
+        console.log(email)
+        if (!email || email === "") {
+            window.location.href = "index.html";
+        }
+
+        window.onload = function () {
+            const mediaType = localStorage.getItem("mediaType");
+            const fileInput = document.getElementById("imageUpload");
+            const label = document.querySelector('.file-upload-label');
+            const icon = document.querySelector('.file-upload-icon');
+            const text = document.querySelector('.file-upload-text');
+
+            switch (mediaType) {
+                case 'image':
+                    fileInput.accept = 'image/*';
+                    icon.className = 'fas fa-image file-upload-icon';
+                    text.innerHTML = '<span class="highlight">Click to upload</span> or drag and drop<br><small>Select your encrypted image file</small>';
+                    break;
+                case 'audio':
+                    fileInput.accept = 'audio/*';
+                    icon.className = 'fas fa-music file-upload-icon';
+                    text.innerHTML = '<span class="highlight">Click to upload</span> or drag and drop<br><small>Select your encrypted audio file</small>';
+                    break;
+                case 'video':
+                    fileInput.accept = 'video/*';
+                    icon.className = 'fas fa-video file-upload-icon';
+                    text.innerHTML = '<span class="highlight">Click to upload</span> or drag and drop<br><small>Select your encrypted video file</small>';
+                    break;
+                default:
+                    alert("No media type selected. Please go back to the homepage.");
+                    break;
+            }
+        };
+
+        // File upload visual feedback
+        document.getElementById('imageUpload').addEventListener('change', function(e) {
+            const label = document.querySelector('.file-upload-label');
+            const text = document.querySelector('.file-upload-text');
+            const icon = document.querySelector('.file-upload-icon');
+            
+            if (e.target.files.length > 0) {
+                label.classList.add('file-selected');
+                icon.className = 'fas fa-check-circle file-upload-icon';
+                text.innerHTML = `<span class="highlight">${e.target.files[0].name}</span><br><small>File selected successfully</small>`;
+            }
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="fileType.js"></script>
+    <script src="homePagescript.js"></script>
+</body>
+
+</html>

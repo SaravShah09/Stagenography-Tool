@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Home Page</title>
+    <script type="module" src="adminScript.js"></script>
+    <link rel="stylesheet" href="adminHomepage.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+    <!-- Particles Background -->
+    <div class="particles">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+    </div>
+
+    <div class="admin-page">
+        <div class="main-container">
+            <!-- Header -->
+            <div class="header">
+                <div class="logo-section">
+                    <i class="fas fa-shield-alt logo-icon"></i>
+                    <h1 class="heading">Admin Panel</h1>
+                </div>
+                <div class="underline"></div>
+                <p class="subtitle">System Administration Dashboard</p>
+            </div>
+
+            <!-- Admin Container -->
+            <div class="admin-container">
+                <div class="admin-header">
+                    <div class="admin-icon-container">
+                        <div class="admin-icon">
+                            <i class="fas fa-user-shield"></i>
+                        </div>
+                    </div>
+                    <h2>Welcome, Administrator</h2>
+                    <p>Manage system operations and user activities</p>
+                </div>
+
+                <div class="admin-actions">
+                    <button class="btn primary admin-btn" onclick="location.href='viewLogs.html'">
+                        <i class="fas fa-clipboard-list"></i>
+                        View Logs
+                    </button>
+                    <button class="btn secondary admin-btn" onclick="location.href='blockUser.html'">
+                        <i class="fas fa-user-slash"></i>
+                        Block User
+                    </button>
+                </div>
+
+                <div class="admin-info">
+                    <div class="info-item">
+                        <i class="fas fa-info-circle"></i>
+                        <span>Access system logs and user activities</span>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>Manage user permissions and restrictions</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="footer">
+                <p>&copy; 2024 Admin Panel. All rights reserved.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const email = localStorage.getItem('email');
+        console.log(email)
+        if (!email || email === "") {
+            window.location.href = "../index.html";
+        }
+    </script>
+</body>
+
+</html>

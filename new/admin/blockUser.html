@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Block / Unblock User</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="blockUser.css" />
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js" defer></script>
+  <script type="module" src="adminScript.js" defer></script>
+</head>
+<body class="admin-page">
+  <div class="main-container">
+    <div class="admin-container">
+      <div class="admin-header">
+        <div class="logo-section">
+          <div class="admin-icon">
+            <i class="fa-solid fa-user-slash"></i>
+          </div>
+          <div>
+            <h2 class="heading">Block / Unblock User</h2>
+            <div class="underline"></div>
+            <p class="subtitle">Enter user email below to change their status</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="filter-section" style="justify-content:center; gap:1rem;">
+        <div class="filter-item">
+          <i class="fa-solid fa-envelope"></i>
+          <input id="adminEmailInput" placeholder="User email" aria-label="User email" />
+        </div>
+        <button type="button" class="admin-btn primary block-btn">
+          <i class="fa-solid fa-user-slash"></i> Block
+        </button>
+        <button type="button" class="admin-btn secondary unblock-btn">
+          <i class="fa-solid fa-user-check"></i> Unblock
+        </button>
+      </div>
+
+      <div id="adminStatus" class="status-container" aria-live="polite">
+        <!-- status message appears here -->
+      </div>
+    </div>
+  </div>
+</body>
+</html>

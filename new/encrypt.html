@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Encrypt Message</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="encrypt.css">
+</head>
+
+<body class="encrypt-page">
+    <!-- Particles Animation -->
+    <div class="particles">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+    </div>
+
+    <div class="main-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo-section">
+                <i class="fas fa-lock logo-icon"></i>
+                <h1 class="heading">Encrypt Message</h1>
+            </div>
+            <div class="underline"></div>
+            <p class="subtitle">Hide your secret message in media files</p>
+        </div>
+
+        <!-- Encrypt Container -->
+        <div class="encrypt-container">
+            <div class="encrypt-box">
+                <!-- Back Button -->
+                <a href="homepage.html" class="back-arrow">
+                    <i class="fas fa-arrow-left"></i>
+                    <span>Back to Home</span>
+                </a>
+
+                <div class="tool-header">
+                    <div class="tool-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h2>Secure Encryption</h2>
+                    <p>Upload a file and enter your secret message to encrypt</p>
+                </div>
+
+                <form class="encrypt-form">
+                    <!-- File Upload Section -->
+                    <div class="upload-section">
+                        <div class="input-group">
+                            <label class="input-label">
+                                <i class="fas fa-upload"></i>
+                                Select Media File
+                            </label>
+                            <div class="file-upload-wrapper">
+                                <input type="file" id="imageUpload" class="file-input">
+                                <div class="file-upload-display">
+                                    <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                                    <span class="upload-text">Click to upload or drag file here</span>
+                                    <small class="upload-hint">Supported formats will be set based on your selection</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Message Input -->
+                    <div class="input-group">
+                        <label class="input-label">
+                            <i class="fas fa-comment-alt"></i>
+                            Secret Message
+                        </label>
+                        <div class="input-box">
+                            <i class="fas fa-pen"></i>
+                            <input type="text" id="message" placeholder="Enter your secret message" required>
+                            <div class="focus-border"></div>
+                        </div>
+                    </div>
+
+                    <!-- Key Input -->
+                    <div class="input-group">
+                        <label class="input-label">
+                            <i class="fas fa-key"></i>
+                            Encryption Key
+                        </label>
+                        <div class="input-box">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" id="key" placeholder="Enter encryption key" required>
+                            <button type="button" class="toggle-password" onclick="togglePassword('key')">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <div class="focus-border"></div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="button-group" id="buttonRow">
+                        <button type="button" class="btn primary" onclick="encryptMessage()">
+                            <i class="fas fa-lock"></i>
+                            <span>Encrypt Message</span>
+                        </button>
+                        <button type="button" id="downloadBtn" class="btn success" style="display: none;">
+                            <i class="fas fa-download"></i>
+                            <span>Download Encrypted File</span>
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Canvas for processing -->
+                <canvas id="canvas" style="display: none;"></canvas>
+
+                <!-- Progress Indicator -->
+                <div class="progress-section" style="display: none;">
+                    <div class="progress-bar">
+                        <div class="progress-fill"></div>
+                    </div>
+                    <p class="progress-text">Processing your file...</p>
+                </div>
+
+                <!-- Info Section -->
+                <div class="info-section">
+                    <div class="info-item">
+                        <i class="fas fa-info-circle"></i>
+                        <span>Your message will be securely embedded in the file</span>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>Remember your key - it's required for decryption</span>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-file-alt"></i>
+                        <span>The output file will look identical to the original</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>&copy; 2024 Steganography Tool. Your secrets are safe with us.</p>
+        </div>
+    </div>
+
+    <script>
+        const email = localStorage.getItem('email');
+        console.log(email)
+        if (!email || email === "") {
+            window.location.href = "index.html";
+        }
+
+        window.onload = function () {
+            const mediaType = localStorage.getItem("mediaType");
+            const fileInput = document.getElementById("imageUpload");
+            const uploadText = document.querySelector('.upload-text');
+            const uploadHint = document.querySelector('.upload-hint');
+
+            switch (mediaType) {
+                case 'image':
+                    fileInput.accept = 'image/*';
+                    uploadText.textContent = 'Click to upload image file';
+                    uploadHint.textContent = 'Supported: JPG, PNG, GIF, BMP';
+                    break;
+                case 'audio':
+                    fileInput.accept = 'audio/*';
+                    uploadText.textContent = 'Click to upload audio file';
+                    uploadHint.textContent = 'Supported: MP3, WAV, OGG, M4A';
+                    break;
+                case 'video':
+                    fileInput.accept = 'video/*';
+                    uploadText.textContent = 'Click to upload video file';
+                    uploadHint.textContent = 'Supported: MP4, AVI, MOV, MKV';
+                    break;
+                default:
+                    alert("No media type selected. Please go back to the homepage.");
+                    break;
+            }
+
+            // File input change handler
+            fileInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    uploadText.textContent = file.name;
+                    uploadHint.textContent = `File size: ${(file.size / 1024 / 1024).toFixed(2)} MB`;
+                    document.querySelector('.file-upload-display').classList.add('file-selected');
+                }
+            });
+        };
+
+        // Password toggle functionality
+        function togglePassword(inputId) {
+            const input = document.getElementById(inputId);
+            const button = input.nextElementSibling;
+            const icon = button.querySelector('i');
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+
+        // Add loading animation when processing
+        function showProgress() {
+            document.querySelector('.progress-section').style.display = 'block';
+        }
+
+        function hideProgress() {
+            document.querySelector('.progress-section').style.display = 'none';
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="fileType.js"></script>
+    <script src="homePagescript.js"></script>
+</body>
+
+</html>
