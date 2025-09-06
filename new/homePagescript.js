@@ -1,5 +1,3 @@
-const BASE_URL = 'https://stagenography-tool1.onrender.com'; // your deployed backend URL
-
 function textToBinary(text) {
     const encoder = new TextEncoder();
     const bytes = encoder.encode(text);
@@ -31,6 +29,7 @@ function encryptMessage() {
         return;
     }
 
+    // Alphanumeric key validation
     if (!/^[a-zA-Z0-9]+$/.test(key)) {
         alert('Key must contain only alphabets and numbers (alphanumeric characters).');
         return;
@@ -118,6 +117,7 @@ function decryptMessage() {
         return;
     }
 
+    // Alphanumeric key validation
     if (!/^[a-zA-Z0-9]+$/.test(key)) {
         alert('Key must contain only alphabets and numbers (alphanumeric characters).');
         return;
@@ -200,7 +200,7 @@ function processExtractedBinary(binaryData, key, mediaType) {
 
 async function storeLog(email, log) {
     try {
-        const response = await axios.post(`${BASE_URL}/logActivity`, { email, log });
+        const response = await axios.post('https://stagenography-tool1.onrender.com/logActivity', { email, log });
         console.log("Logs saved successfully");
         return response;
     } catch (error) {
