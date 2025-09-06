@@ -8,7 +8,7 @@ window.loginAdmin = function () {
     console.log(email);
     console.log(password);
 
-    axios.post('http://localhost:3001/login', { email, password, role })
+    axios.post('https://stagenography-tool1.onrender.com/login', { email, password, role })
         .then(response => {
             // console.log(response.data);
             generateAdminOTP();
@@ -28,7 +28,7 @@ window.generateAdminOTP = function () {
     let errorBox = document.getElementById("login-error");
     console.log("email", email);
     console.log("otp", generatedOTP);
-    axios.post('http://localhost:3001/otp', { email, otp: generatedOTP })
+    axios.post('https://stagenography-tool1.onrender.com/otp', { email, otp: generatedOTP })
         .then(response => {
             // console.log(response.data);
             console.log("OTP sent");
@@ -81,7 +81,7 @@ window.blockUser = async function (e) {
     }
 
     try {
-        const response = await axios.post('http://localhost:3001/admin/blockUser', { email });
+        const response = await axios.post('https://stagenography-tool1.onrender.com/admin/blockUser', { email });
         statusElement.textContent = response.data.message;
         statusElement.className = 'status-message success';
     } catch (error) {
@@ -103,7 +103,7 @@ window.unblockUser = async function (e) {
     }
 
     try {
-        const response = await axios.post('http://localhost:3001/admin/unblockUser', { email });
+        const response = await axios.post('https://stagenography-tool1.onrender.com/admin/unblockUser', { email });
         statusElement.textContent = response.data.message;
         statusElement.className = 'status-message success';
     } catch (error) {
