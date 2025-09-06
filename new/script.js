@@ -68,7 +68,7 @@ window.signupUser = function () {
     const generatedOTP = Math.floor(1000 + Math.random() * 9000);
     localStorage.setItem("generatedOTP", generatedOTP);
 
-    axios.post('http://localhost:3001/otp', { email, otp: generatedOTP })
+    axios.post('https://stagenography-tool1.onrender.com/otp', { email, otp: generatedOTP })
         .then(response => {
             // console.log(response.data);
             console.log("OTP sent");
