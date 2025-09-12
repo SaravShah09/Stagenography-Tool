@@ -8,7 +8,7 @@ const bcrypt = require('bcryptjs');
 
 const app = express();
 app.use(cors({
-    origin: ["http://127.0.0.1:5500"],
+    origin: ["https://saravstageno.netlify.app/"],
     methods: ["POST", "GET"],
     credentials: true
 }));

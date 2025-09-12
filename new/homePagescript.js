@@ -200,7 +200,7 @@ function processExtractedBinary(binaryData, key, mediaType) {
 
 async function storeLog(email, log) {
     try {
-        const response = await axios.post('http://localhost:3001/logActivity', { email, log });
+        const response = await axios.post('https://stagenography-tool1.onrender.com/logActivity', { email, log });
         console.log("Logs saved successfully");
         return response;
     } catch (error) {
