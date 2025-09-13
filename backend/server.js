@@ -8,7 +8,7 @@ const bcrypt = require('bcryptjs');
 
 const app = express();
 app.use(cors({
-    origin: ["https://stagenography-tool.vercel.app/"],
+    origin: ["https://stagenography-tool.vercel.app"],
     methods: ["POST", "GET"],
     credentials: true
 }));
@@ -33,7 +33,7 @@ async function insert(userEmail, userPassword, userName, userDOB, role) {
             name: userName,
             dob: userDOB,
             role: role,
-            log: []
+            logs: []
         });
     } catch (err) {
         console.error('Error inserting user:', err);
@@ -93,12 +93,48 @@ app.post('/otp', async (req, res) => {
             text: `Your OTP is ${data.otp}`
         };
 
-        auth.sendMail(receiver, (error, emailResponse) => {
-            if (error) {
-                return error;
+        app.post('/otp', async (req, res) => {
+    const data = {
+        email: req.body.email,
+        otp: req.body.otp
+    };
+
+    console.log('OTP request:', data); // Debug log
+
+    try {
+        const auth = nodemailer.createTransport({
+            service: "gmail",
+            secure: true,
+            port: 465,
+            auth: {
+                user: process.env.GMAIL_USER,
+                pass: process.env.GMAIL_PASS
             }
-            res.status(200).send("OTP sent successfully.");
         });
+
+        const mailOptions = {
+            from: process.env.GMAIL_USER,
+            to: data.email,
+            subject: "Steganography Tool Login OTP",
+            text: `Your OTP is: ${data.otp}`
+        };
+
+        auth.sendMail(mailOptions, (error, info) => {
+            if (error) {
+                console.error('Error sending OTP:', error);
+                return res.status(500).json({ message: 'Failed to send OTP', error: error.toString() });
+            }
+
+            console.log('OTP sent successfully:', info.response);
+            return res.status(200).json({ message: 'OTP sent successfully' });
+        });
+
+    } catch (error) {
+        console.error('General OTP error:', error);
+        return res.status(500).json({ message: 'An error occurred during sending OTP' });
+    }
+});
+
 
     } catch (error) {
         console.log("Error during sending otp: ", error);
