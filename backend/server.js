@@ -40,7 +40,7 @@ async function insert(userEmail, userPassword, userName, userDOB, role) {
     }
 }
 
-app.post('https://stagenography-tool.vercel.app/signup', async (req, res) => {
+app.post('/signup', async (req, res) => {
     const data = {
         email: req.body.email,
         password: req.body.password,
@@ -69,7 +69,7 @@ app.post('https://stagenography-tool.vercel.app/signup', async (req, res) => {
     }
 });
 
-app.post('https://stagenography-tool.vercel.app/otp', async (req, res) => {
+app.post('/otp', async (req, res) => {
     const data = {
         email: req.body.email,
         otp: req.body.otp
@@ -106,7 +106,7 @@ app.post('https://stagenography-tool.vercel.app/otp', async (req, res) => {
     }
 });
 
-app.post('https://stagenography-tool.vercel.app/login', async (req, res) => {
+app.post('/login', async (req, res) => {
     const data = {
         email: req.body.email,
         password: req.body.password,
@@ -139,7 +139,7 @@ app.post('https://stagenography-tool.vercel.app/login', async (req, res) => {
     }
 });
 
-app.post('https://stagenography-tool.vercel.app/logActivity', async (req, res) => {
+app.post('/logActivity', async (req, res) => {
     const { email, log } = req.body;
 
     try {
@@ -160,7 +160,7 @@ app.post('https://stagenography-tool.vercel.app/logActivity', async (req, res) =
     }
 });
 
-app.get('https://stagenography-tool.vercel.app/logs', async (req, res) => {
+app.get('/logs', async (req, res) => {
     try {
         const users = await User.find({}, { email: 1, logs: 1 })
             .sort({ "logs.time": -1 })
@@ -183,7 +183,7 @@ app.get('https://stagenography-tool.vercel.app/logs', async (req, res) => {
     }
 });
 
-app.post('https://stagenography-tool.vercel.app/admin/blockUser', async (req, res) => {
+app.post('/admin/blockUser', async (req, res) => {
     const { email } = req.body;
 
     try {
@@ -204,7 +204,7 @@ app.post('https://stagenography-tool.vercel.app/admin/blockUser', async (req, re
     }
 });
 
-app.post('https://stagenography-tool.vercel.app/admin/unblockUser', async (req, res) => {
+app.post('/admin/unblockUser', async (req, res) => {
     const { email } = req.body;
 
     try {
