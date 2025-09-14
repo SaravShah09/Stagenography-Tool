@@ -6,7 +6,7 @@
   <title>View Logs</title>
 
   <!-- Font Awesome for icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <link rel="stylesheet" href="viewLogs.css" />
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js" defer></script>
@@ -180,7 +180,7 @@
       document.getElementById('apply-filters').addEventListener('click', applyFilters);
       document.getElementById('clear-filters').addEventListener('click', clearFilters);
 
-      axios.get('https://stagenographytool1.onrender.com/logs')
+      axios.get('http://localhost:3001/logs')
         .then(response => {
           allLogs = Array.isArray(response.data) ? response.data : [];
           document.getElementById('status').textContent = '';

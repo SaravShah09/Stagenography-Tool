@@ -8,7 +8,7 @@ const bcrypt = require('bcryptjs');
 
 const app = express();
 app.use(cors({
-    origin: ["https://stagenography-tool.vercel.app"],
+    origin: ["http://127.0.0.1:5500"],  // Correct frontend origin
     methods: ["POST", "GET"],
     credentials: true
 }));
@@ -21,7 +21,7 @@ const connectDB = async () => {
     } catch (e) {
         console.log(e.message);
     }
-}
+};
 
 connectDB();
 
@@ -75,31 +75,7 @@ app.post('/otp', async (req, res) => {
         otp: req.body.otp
     };
 
-    try {
-        const auth = nodemailer.createTransport({
-            service: "gmail",
-            secure: true,
-            port: 465,
-            auth: {
-                user: process.env.GMAIL_USER,
-                pass: process.env.GMAIL_PASS
-            }
-        });
-
-        let receiver = {
-            from: process.env.GMAIL_USER,
-            to: data.email,
-            subject: "Steganography Tool Login OTP",
-            text: `Your OTP is ${data.otp}`
-        };
-
-        app.post('/otp', async (req, res) => {
-    const data = {
-        email: req.body.email,
-        otp: req.body.otp
-    };
-
-    console.log('OTP request:', data); // Debug log
+    console.log('OTP request:', data);
 
     try {
         const auth = nodemailer.createTransport({
@@ -132,13 +108,6 @@ app.post('/otp', async (req, res) => {
     } catch (error) {
         console.error('General OTP error:', error);
         return res.status(500).json({ message: 'An error occurred during sending OTP' });
-    }
-});
-
-
-    } catch (error) {
-        console.log("Error during sending otp: ", error);
-        res.status(500).send("An error occurred during sending otp.");
     }
 });
 

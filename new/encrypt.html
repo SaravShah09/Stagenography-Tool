@@ -58,10 +58,10 @@
                             </label>
                             <div class="file-upload-wrapper">
                                 <input type="file" id="imageUpload" class="file-input">
-                                <div class="file-upload-display">
-                                    <i class="fas fa-cloud-upload-alt upload-icon"></i>
-                                    <span class="upload-text">Click to upload or drag file here</span>
-                                    <small class="upload-hint">Supported formats will be set based on your selection</small>
+                                <div class="file-upload-display" id="uploadBox">
+                                    <i class="fas fa-cloud-upload-alt upload-icon" id="uploadIcon"></i>
+                                    <span class="upload-text" id="uploadText">Click to upload or drag file here</span>
+                                    <small class="upload-hint" id="uploadHint">Supported formats will be set based on your selection</small>
                                 </div>
                             </div>
                         </div>
@@ -146,16 +146,40 @@
 
     <script>
         const email = localStorage.getItem('email');
-        console.log(email)
         if (!email || email === "") {
             window.location.href = "index.html";
         }
 
+        function makeUploadBoxGreen() {
+            const uploadBox = document.getElementById('uploadBox');
+            const uploadText = document.getElementById('uploadText');
+            const uploadHint = document.getElementById('uploadHint');
+            const uploadIcon = document.getElementById('uploadIcon');
+
+            // Apply green styling directly
+            uploadBox.style.border = '2px solid #22c55e';
+            uploadBox.style.backgroundColor = 'rgba(34, 197, 94, 0.1)';
+            uploadText.style.color = '#22c55e';
+            uploadText.style.fontWeight = '600';
+            uploadHint.style.color = '#16a34a';
+            uploadIcon.style.color = '#22c55e';
+            
+            // Change icon to check
+            uploadIcon.classList.remove('fa-cloud-upload-alt');
+            uploadIcon.classList.add('fa-check-circle');
+            
+            console.log('Upload box turned green successfully!');
+        }
+
         window.onload = function () {
+            console.log('Page loaded!'); // Debug log
             const mediaType = localStorage.getItem("mediaType");
             const fileInput = document.getElementById("imageUpload");
-            const uploadText = document.querySelector('.upload-text');
-            const uploadHint = document.querySelector('.upload-hint');
+            const uploadText = document.getElementById('uploadText');
+            const uploadHint = document.getElementById('uploadHint');
+
+            console.log('Media type:', mediaType); // Debug log
+            console.log('File input:', fileInput); // Debug log
 
             switch (mediaType) {
                 case 'image':
@@ -178,23 +202,23 @@
                     break;
             }
 
-            // File input change handler
-            fileInput.addEventListener('change', function(e) {
+            fileInput.addEventListener('change', function (e) {
                 const file = e.target.files[0];
                 if (file) {
                     uploadText.textContent = file.name;
                     uploadHint.textContent = `File size: ${(file.size / 1024 / 1024).toFixed(2)} MB`;
-                    document.querySelector('.file-upload-display').classList.add('file-selected');
+                    
+                    // Call function to make upload box green
+                    makeUploadBoxGreen();
                 }
             });
         };
 
-        // Password toggle functionality
         function togglePassword(inputId) {
             const input = document.getElementById(inputId);
             const button = input.nextElementSibling;
             const icon = button.querySelector('i');
-            
+
             if (input.type === 'password') {
                 input.type = 'text';
                 icon.classList.remove('fa-eye');
@@ -206,7 +230,6 @@
             }
         }
 
-        // Add loading animation when processing
         function showProgress() {
             document.querySelector('.progress-section').style.display = 'block';
         }

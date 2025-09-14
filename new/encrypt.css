@@ -211,6 +211,7 @@ body {
     background: var(--gradient-primary);
 }
 
+
 /* ===== BACK ARROW ===== */
 .back-arrow {
     position: absolute;
@@ -343,7 +344,7 @@ body {
 }
 
 .file-upload-display.file-selected {
-    border-color: var(--success-color);
+    border-color: #22c55e;
     background: rgba(34, 197, 94, 0.05);
 }
 

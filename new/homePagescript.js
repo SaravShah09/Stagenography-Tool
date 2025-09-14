@@ -29,7 +29,6 @@ function encryptMessage() {
         return;
     }
 
-    // Alphanumeric key validation
     if (!/^[a-zA-Z0-9]+$/.test(key)) {
         alert('Key must contain only alphabets and numbers (alphanumeric characters).');
         return;
@@ -63,6 +62,7 @@ function encryptMessage() {
                 link.href = canvas.toDataURL();
                 link.click();
             };
+
             const email = localStorage.getItem('email');
             const log = {
                 type: "Encryption",
@@ -93,6 +93,7 @@ function encryptMessage() {
                 link.download = `encrypted.${file.name.split('.').pop()}`;
                 link.click();
             };
+
             const email = localStorage.getItem('email');
             const log = {
                 type: "Encryption",
@@ -117,7 +118,6 @@ function decryptMessage() {
         return;
     }
 
-    // Alphanumeric key validation
     if (!/^[a-zA-Z0-9]+$/.test(key)) {
         alert('Key must contain only alphabets and numbers (alphanumeric characters).');
         return;
@@ -186,6 +186,7 @@ function processExtractedBinary(binaryData, key, mediaType) {
         time: Date.now()
     };
     storeLog(email, log);
+
     if (storedKey === key) {
         const display = document.getElementById('decodedMessage');
         if (display) {
@@ -200,7 +201,7 @@ function processExtractedBinary(binaryData, key, mediaType) {
 
 async function storeLog(email, log) {
     try {
-        const response = await axios.post('https://stagenographytool1.onrender.com/logActivity', { email, log });
+        const response = await axios.post('http://localhost:3001/logActivity', { email, log });
         console.log("Logs saved successfully");
         return response;
     } catch (error) {

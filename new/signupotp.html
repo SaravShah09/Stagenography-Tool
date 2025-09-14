@@ -104,54 +104,121 @@
     <script type="module" src="script.js"></script>
     <script>
         // OTP input functionality
+        const otpDigits = document.querySelectorAll('.otp-digit');
+        const hiddenInput = document.getElementById('otp-input');
+    
         function moveToNext(current, index) {
-            const otpDigits = document.querySelectorAll('.otp-digit');
-            const hiddenInput = document.getElementById('otp-input');
-            
             // Only allow digits
             current.value = current.value.replace(/[^0-9]/g, '');
-            
+    
             // Move to next input if current is filled
-            if (current.value.length === 1 && index < 3) {
+            if (current.value.length === 1 && index < otpDigits.length - 1) {
                 otpDigits[index + 1].focus();
             }
-            
-            // Update hidden input with combined OTP
-            let combinedOTP = '';
-            otpDigits.forEach(input => {
-                combinedOTP += input.value;
-            });
-            hiddenInput.value = combinedOTP;
+    
+            // Update hidden input
+            updateHiddenInput();
         }
-
+    
+        function updateHiddenInput() {
+            hiddenInput.value = Array.from(otpDigits).map(i => i.value).join('');
+        }
+    
         // Handle backspace to move to previous input
-        document.querySelectorAll('.otp-digit').forEach((input, index) => {
+        otpDigits.forEach((input, index) => {
             input.addEventListener('keydown', function(e) {
                 if (e.key === 'Backspace' && this.value === '' && index > 0) {
-                    document.querySelectorAll('.otp-digit')[index - 1].focus();
+                    otpDigits[index - 1].focus();
+                }
+    
+                // Enter key triggers verification
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    verifySignupOTP();
+                }
+            });
+    
+            input.addEventListener('paste', function(e) {
+                e.preventDefault();
+                const pastedData = e.clipboardData.getData('text').replace(/[^0-9]/g, '');
+                if (pastedData.length === 4) {
+                    otpDigits.forEach((inp, idx) => inp.value = pastedData[idx] || '');
+                    updateHiddenInput();
+                    otpDigits[otpDigits.length - 1].focus();
                 }
             });
         });
-
-        // Resend OTP function
+    
+        // Auto-focus first input on page load
+        window.addEventListener('load', () => {
+            otpDigits[0].focus();
+        });
+    
+        // Resend OTP function integrated with backend
         function resendOTP() {
             const resendBtn = document.querySelector('.resend-btn');
             resendBtn.disabled = true;
             resendBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
-            
-            // Simulate resend (you can integrate with your actual resend logic)
-            setTimeout(() => {
-                resendBtn.disabled = false;
-                resendBtn.innerHTML = '<i class="fas fa-refresh"></i> Resend OTP';
-                alert('OTP has been resent to your email!');
-            }, 2000);
+    
+            const email = localStorage.getItem('email');
+            const generatedOTP = Math.floor(1000 + Math.random() * 9000);
+            localStorage.setItem('generatedOTP', generatedOTP);
+    
+            axios.post('https://stagenographytool1.onrender.com/otp', { email, otp: generatedOTP })
+                .then(() => {
+                    resendBtn.disabled = false;
+                    resendBtn.innerHTML = '<i class="fas fa-refresh"></i> Resend OTP';
+                    alert('OTP has been resent to your email!');
+                })
+                .catch(() => {
+                    resendBtn.disabled = false;
+                    resendBtn.innerHTML = '<i class="fas fa-refresh"></i> Resend OTP';
+                    alert('Failed to resend OTP. Try again.');
+                });
+    
+            // Clear current inputs
+            otpDigits.forEach(input => input.value = '');
+            updateHiddenInput();
+            otpDigits[0].focus();
         }
-
-        // Auto-focus first input on page load
-        window.addEventListener('load', () => {
-            document.querySelector('.otp-digit').focus();
-        });
+    
+        // Verify Signup OTP function
+        function verifySignupOTP() {
+            const enteredOTP = hiddenInput.value;
+            const generatedOTP = localStorage.getItem('generatedOTP');
+            const errorBox = document.getElementById('otp-error');
+    
+            if (enteredOTP.length !== 4) {
+                errorBox.textContent = 'Please enter the complete 4-digit OTP';
+                return;
+            }
+    
+            if (enteredOTP == generatedOTP) {
+                // Retrieve user data saved during signup
+                const userDataString = localStorage.getItem('userData');
+                if (userDataString) {
+                    const { name, dob, email, password } = JSON.parse(userDataString);
+    
+                    axios.post('https://stagenographytool1.onrender.com/signup', { name, dob, email, password, role: "user" })
+                        .then(() => {
+                            localStorage.setItem('email', email);
+                            window.location.href = 'homepage.html';
+                        })
+                        .catch(() => {
+                            errorBox.textContent = 'Signup failed. Please try again.';
+                        });
+                } else {
+                    errorBox.textContent = 'No signup data found. Please signup again.';
+                }
+            } else {
+                errorBox.textContent = 'Incorrect OTP! Try again.';
+                otpDigits.forEach(input => input.value = '');
+                updateHiddenInput();
+                otpDigits[0].focus();
+            }
+        }
     </script>
+    
 </body>
 
 </html>

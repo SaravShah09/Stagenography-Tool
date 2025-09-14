@@ -132,114 +132,111 @@
     
     <script>
 
-        function goToSignup() {
+function goToSignup() {
     window.location.href = "signup.html";
 }
-        localStorage.setItem('email', '');
-        
-        // Toggle password visibility
-        function togglePassword() {
-            const passwordInput = document.getElementById('login-password');
-            const toggleIcon = document.getElementById('toggle-icon');
-            
-            if (passwordInput.type === 'password') {
-                passwordInput.type = 'text';
-                toggleIcon.classList.remove('fa-eye');
-                toggleIcon.classList.add('fa-eye-slash');
-            } else {
-                passwordInput.type = 'password';
-                toggleIcon.classList.remove('fa-eye-slash');
-                toggleIcon.classList.add('fa-eye');
-            }
-        }
 
-        // Enhanced login function with loading state
-        function handleLogin() {
-            const loginButton = document.getElementById('loginUser');
-            const loginIcon = document.getElementById('login-icon');
-            const loginText = document.getElementById('login-text');
-            const errorBox = document.getElementById('login-error');
-            
-            // Show loading state
-            loginButton.disabled = true;
-            loginIcon.className = 'fas fa-spinner fa-spin';
-            loginText.textContent = 'Logging in...';
-            errorBox.textContent = '';
-            
-            // Call the original loginUser function
-            try {
-                loginUser();
-            } catch (error) {
-                console.error('Login error:', error);
-                errorBox.textContent = 'An error occurred during login. Please try again.';
-                resetLoginButton();
-            }
-        }
+localStorage.setItem('email', '');
 
-        // Reset login button to original state
-        function resetLoginButton() {
-            const loginButton = document.getElementById('loginUser');
-            const loginIcon = document.getElementById('login-icon');
-            const loginText = document.getElementById('login-text');
-            
-            loginButton.disabled = false;
-            loginIcon.className = 'fas fa-sign-in-alt';
-            loginText.textContent = 'Log In';
-        }
+// Toggle password visibility
+function togglePassword() {
+    const passwordInput = document.getElementById('login-password');
+    const toggleIcon = document.getElementById('toggle-icon');
+    
+    if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        toggleIcon.classList.remove('fa-eye');
+        toggleIcon.classList.add('fa-eye-slash');
+    } else {
+        passwordInput.type = 'password';
+        toggleIcon.classList.remove('fa-eye-slash');
+        toggleIcon.classList.add('fa-eye');
+    }
+}
 
-        // Override the original loginUser function to handle button state
-        const originalLoginUser = window.loginUser;
-        window.loginUser = function() {
-            const email = document.getElementById("login-email").value;
-            const password = document.getElementById("login-password").value;
-            let errorBox = document.getElementById("login-error");
-            
-            // Basic validation
-            if (!email || !password) {
-                errorBox.textContent = "Please enter both email and password";
-                resetLoginButton();
-                return;
-            }
-            
-            localStorage.setItem('email', email);
+// Enhanced login function with loading state
+function handleLogin() {
+    const loginButton = document.getElementById('loginUser');
+    const loginIcon = document.getElementById('login-icon');
+    const loginText = document.getElementById('login-text');
+    const errorBox = document.getElementById('login-error');
+    
+    // Show loading state
+    loginButton.disabled = true;
+    loginIcon.className = 'fas fa-spinner fa-spin';
+    loginText.textContent = 'Logging in...';
+    errorBox.textContent = '';
+    
+    try {
+        loginUser();
+    } catch (error) {
+        console.error('Login error:', error);
+        errorBox.textContent = 'An error occurred during login. Please try again.';
+        resetLoginButton();
+    }
+}
 
-            axios.post('https://stagenographytool1.onrender.com/login', { email, password })
-                .then(response => {
-                    generateOTP();
-                })
-                .catch(error => {
-                    console.log(error);
-                    errorBox.textContent = error.response?.data?.message || "Invalid email or password";
-                    resetLoginButton();
-                });
-        }
+// Reset login button to original state
+function resetLoginButton() {
+    const loginButton = document.getElementById('loginUser');
+    const loginIcon = document.getElementById('login-icon');
+    const loginText = document.getElementById('login-text');
+    
+    loginButton.disabled = false;
+    loginIcon.className = 'fas fa-sign-in-alt';
+    loginText.textContent = 'Log In';
+}
 
-        // Enhanced form validation
-        document.addEventListener('DOMContentLoaded', function() {
-            const emailInput = document.getElementById('login-email');
-            const passwordInput = document.getElementById('login-password');
-            const loginForm = document.querySelector('.login-form');
-            
-            // Add enter key support
-            loginForm.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    handleLogin();
-                }
-            });
-            
-            // Real-time validation
-            emailInput.addEventListener('blur', function() {
-                const email = this.value.trim();
-                const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-                
-                if (email && !emailPattern.test(email)) {
-                    this.style.borderColor = 'var(--error-color)';
-                } else {
-                    this.style.borderColor = '';
-                }
-            });
+// Overridden loginUser with localhost API URL
+window.loginUser = function() {
+    const email = document.getElementById("login-email").value;
+    const password = document.getElementById("login-password").value;
+    let errorBox = document.getElementById("login-error");
+    
+    if (!email || !password) {
+        errorBox.textContent = "Please enter both email and password";
+        resetLoginButton();
+        return;
+    }
+    
+    localStorage.setItem('email', email);
+
+    axios.post('http://localhost:3001/login', { email, password })
+        .then(response => {
+            generateOTP();
+        })
+        .catch(error => {
+            console.log(error);
+            errorBox.textContent = error.response?.data?.message || "Invalid email or password";
+            resetLoginButton();
         });
+}
+
+// Enhanced form validation
+document.addEventListener('DOMContentLoaded', function() {
+    const emailInput = document.getElementById('login-email');
+    const passwordInput = document.getElementById('login-password');
+    const loginForm = document.querySelector('.login-form');
+    
+    loginForm.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            handleLogin();
+        }
+    });
+    
+    emailInput.addEventListener('blur', function() {
+        const email = this.value.trim();
+        const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        
+        if (email && !emailPattern.test(email)) {
+            this.style.borderColor = 'var(--error-color)';
+        } else {
+            this.style.borderColor = '';
+        }
+    });
+});
+
     </script>
 
 </body>

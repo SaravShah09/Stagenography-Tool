@@ -2,19 +2,18 @@
 window.loginAdmin = function () {
     const email = document.getElementById("login-email").value;
     const password = document.getElementById("login-password").value;
-    const role = "admin"
+    const role = "admin";
     let errorBox = document.getElementById("login-error");
     localStorage.setItem('email', email);
     console.log(email);
     console.log(password);
 
-    axios.post('https://stagenographytool1.onrender.com/login', { email, password, role })
+    axios.post('http://localhost:3001/login', { email, password, role })
         .then(response => {
-            // console.log(response.data);
             generateAdminOTP();
         })
         .catch(error => {
-            console.log(error)
+            console.log(error);
             errorBox.textContent = "Invalid email or password";
             return;
         });
@@ -28,22 +27,21 @@ window.generateAdminOTP = function () {
     let errorBox = document.getElementById("login-error");
     console.log("email", email);
     console.log("otp", generatedOTP);
-    axios.post('https://stagenographytool1.onrender.com/otp', { email, otp: generatedOTP })
+    
+    axios.post('http://localhost:3001/otp', { email, otp: generatedOTP })
         .then(response => {
-            // console.log(response.data);
             console.log("OTP sent");
         })
         .catch(error => {
             const errorMsg = "Login failed";
             errorBox.textContent = errorMsg;
-            // console.log("Send otp failed: ", error);
-            console.error("Error response data:", error.response.data);
-            console.error("Error response status:", error.response.status);
-            console.error("Error response headers:", error.response.headers);
+            console.error("Error response data:", error.response?.data);
+            console.error("Error response status:", error.response?.status);
+            console.error("Error response headers:", error.response?.headers);
             return;
-        })
+        });
+
     console.log("axios completed");
-    // alert(`Your OTP is: ${generatedOTP}`); // Simulating email sending
     window.location.href = "adminOTP.html";
 }
 
@@ -81,7 +79,7 @@ window.blockUser = async function (e) {
     }
 
     try {
-        const response = await axios.post('https://stagenographytool1.onrender.com/admin/blockUser', { email });
+        const response = await axios.post('http://localhost:3001/admin/blockUser', { email });
         statusElement.textContent = response.data.message;
         statusElement.className = 'status-message success';
     } catch (error) {
@@ -103,7 +101,7 @@ window.unblockUser = async function (e) {
     }
 
     try {
-        const response = await axios.post('https://stagenographytool1.onrender.com/admin/unblockUser', { email });
+        const response = await axios.post('http://localhost:3001/admin/unblockUser', { email });
         statusElement.textContent = response.data.message;
         statusElement.className = 'status-message success';
     } catch (error) {
@@ -112,7 +110,6 @@ window.unblockUser = async function (e) {
         statusElement.className = 'status-message error';
     }
 }
-
 
 // Event listeners for OTP page
 document.addEventListener('DOMContentLoaded', function() {
@@ -139,7 +136,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
         
-        // Auto-focus on OTP input
         otpInput.focus();
     }
     
@@ -160,7 +156,6 @@ document.addEventListener('DOMContentLoaded', function() {
     if (emailInput) {
         emailInput.addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
-                // You can decide which action to trigger on Enter
                 blockUser();
             }
         });
