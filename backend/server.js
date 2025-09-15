@@ -8,7 +8,7 @@ const bcrypt = require('bcryptjs');
 
 const app = express();
 app.use(cors({
-    origin: ["https://stagenography-tool.vercel.app/"],  // Correct frontend origin
+    origin: ["https://stagenography-tool.vercel.app"],  // Correct frontend origin
     methods: ["POST", "GET"],
     credentials: true
 }));
