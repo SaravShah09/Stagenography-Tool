@@ -58,21 +58,21 @@ window.signupUser = function () {
     const generatedOTP = Math.floor(1000 + Math.random() * 9000);
     localStorage.setItem("generatedOTP", generatedOTP);
 
-    axios.post('https://stagenography.onrender.com/otp', { email, otp: generatedOTP })
-        .then(response => {
-            console.log("OTP sent");
-        })
-        .catch(error => {
-            errorElement.textContent = "Error in sending OTP";
-            console.log("Send OTP failed:", error);
-            return;
-        });
-
     const userData = { name, dob, email, password, confirmPassword };
     localStorage.setItem('userData', JSON.stringify(userData));
 
-    window.location.href = "signupotp.html";
+    // First send OTP, and only on success, navigate to OTP page
+    axios.post('https://stagenography.onrender.com/otp', { email, otp: generatedOTP })
+        .then(response => {
+            console.log("OTP sent successfully");
+            window.location.href = "signupotp.html";
+        })
+        .catch(error => {
+            errorElement.textContent = "Error in sending OTP. Please try again.";
+            console.error("Send OTP failed:", error);
+        });
 }
+
 
 // Generate OTP and Redirect to OTP Page
 window.generateOTP = function () {
