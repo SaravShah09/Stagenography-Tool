@@ -10,7 +10,7 @@ window.loginUser = function () {
     let errorBox = document.getElementById("login-error");
     localStorage.setItem('email', email);
 
-    axios.post('http://localhost:3001/login', { email, password })
+    axios.post('https://stagenography.onrender.com/login', { email, password })
         .then(response => {
             generateOTP();
         })
@@ -58,7 +58,7 @@ window.signupUser = function () {
     const generatedOTP = Math.floor(1000 + Math.random() * 9000);
     localStorage.setItem("generatedOTP", generatedOTP);
 
-    axios.post('http://localhost:3001/otp', { email, otp: generatedOTP })
+    axios.post('https://stagenography.onrender.com/otp', { email, otp: generatedOTP })
         .then(response => {
             console.log("OTP sent");
         })
@@ -81,7 +81,7 @@ window.generateOTP = function () {
     const email = localStorage.getItem('email');
     let errorBox = document.getElementById("login-error");
 
-    axios.post('http://localhost:3001/otp', { email, otp: generatedOTP })
+    axios.post('https://stagenography.onrender.com/otp', { email, otp: generatedOTP })
         .then(response => {
             console.log("OTP sent");
         })
@@ -108,7 +108,7 @@ window.verifySignupOTP = function () {
         const generatedOTP = localStorage.getItem('generatedOTP');
 
         if (enteredOTP == generatedOTP) {
-            axios.post('http://localhost:3001/signup', { email, password, name, dob, role: "user" })
+            axios.post('https://stagenography.onrender.com/signup', { email, password, name, dob, role: "user" })
                 .then(response => {
                     localStorage.setItem('email', email);
                     console.log("Signup Successful");

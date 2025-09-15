@@ -201,7 +201,7 @@ window.loginUser = function() {
     
     localStorage.setItem('email', email);
 
-    axios.post('http://localhost:3001/login', { email, password })
+    axios.post('https://stagenography.onrender.com/login', { email, password })
         .then(response => {
             generateOTP();
         })

@@ -180,7 +180,7 @@
       document.getElementById('apply-filters').addEventListener('click', applyFilters);
       document.getElementById('clear-filters').addEventListener('click', clearFilters);
 
-      axios.get('http://localhost:3001/logs')
+      axios.get('https://stagenography.onrender.com/logs')
         .then(response => {
           allLogs = Array.isArray(response.data) ? response.data : [];
           document.getElementById('status').textContent = '';
