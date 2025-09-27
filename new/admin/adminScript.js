@@ -1,4 +1,3 @@
-// Login User
 window.loginAdmin = function () {
     const email = document.getElementById("login-email").value;
     const password = document.getElementById("login-password").value;
@@ -19,7 +18,6 @@ window.loginAdmin = function () {
         });
 }
 
-// Generate OTP and Redirect to OTP Page
 window.generateAdminOTP = function () {
     const generatedOTP = Math.floor(1000 + Math.random() * 9000);
     localStorage.setItem('generatedOTP', generatedOTP);
@@ -45,7 +43,6 @@ window.generateAdminOTP = function () {
     window.location.href = "adminOTP.html";
 }
 
-// Verify OTP
 window.verifyOTP = function () {
     let enteredOTP = document.getElementById("otp-input").value;
     let errorBox = document.getElementById("otp-error");
@@ -66,7 +63,6 @@ window.verifyOTP = function () {
     }
 }
 
-// Block user
 window.blockUser = async function (e) {
     if (e && e.preventDefault) e.preventDefault();
     const email = document.getElementById('adminEmailInput').value;
@@ -111,15 +107,12 @@ window.unblockUser = async function (e) {
     }
 }
 
-// Event listeners for OTP page
 document.addEventListener('DOMContentLoaded', function() {
-    // OTP Verification
     const verifyButton = document.getElementById('verifyOTP');
     if (verifyButton) {
         verifyButton.addEventListener('click', verifyOTP);
     }
-    
-    // Resend OTP
+
     const resendButton = document.getElementById('resendOTP');
     if (resendButton) {
         resendButton.addEventListener('click', function() {
@@ -127,7 +120,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Enter key support for OTP input
     const otpInput = document.getElementById('otp-input');
     if (otpInput) {
         otpInput.addEventListener('keypress', function(e) {
@@ -138,20 +130,17 @@ document.addEventListener('DOMContentLoaded', function() {
         
         otpInput.focus();
     }
-    
-    // Block user button
+
     const blockButton = document.querySelector('.block-btn');
     if (blockButton) {
         blockButton.addEventListener('click', blockUser);
     }
-    
-    // Unblock user button  
+
     const unblockButton = document.querySelector('.unblock-btn');
     if (unblockButton) {
         unblockButton.addEventListener('click', unblockUser);
     }
-    
-    // Enter key support for email input in block user page
+
     const emailInput = document.getElementById('adminEmailInput');
     if (emailInput) {
         emailInput.addEventListener('keypress', function(e) {
