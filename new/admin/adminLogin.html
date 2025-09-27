@@ -12,8 +12,7 @@
 </head>
 
 <body>
-    <!-- Particles Background -->
-    <div class="particles">
+        <div class="particles">
         <div class="particle"></div>
         <div class="particle"></div>
         <div class="particle"></div>
@@ -34,9 +33,7 @@
                 <p class="subtitle">Admin Access Portal</p>
             </div>
 
-            <!-- Login Container -->
             <div class="login-container">
-                <!-- Left Side Image -->
                 <div class="left">
                     <div class="image-overlay">
                         <img src="images/stego-image.jpg" alt="Steganography Image">
@@ -60,8 +57,6 @@
                         </div>
                     </div>
                 </div>
-
-                <!-- Right Side Login Form -->
                 <div class="right">
                     <div class="form-container">
                         <div class="form-header">
@@ -88,8 +83,6 @@
                                     <div class="focus-border"></div>
                                 </div>
                             </div>
-
-                            <!-- Error Message -->
                             <div id="login-error" class="error"></div>
 
                             <div class="form-options">
@@ -122,8 +115,6 @@
                     </div>
                 </div>
             </div>
-
-            <!-- Footer -->
             <div class="footer">
                 <p>&copy; 2024 Steganography Tool. Secure administrative access.</p>
             </div>
@@ -131,7 +122,6 @@
     </div>
 
     <script>
-        // Toggle password visibility function
         function togglePasswordVisibility(inputId, button) {
             const input = document.getElementById(inputId);
             const icon = button.querySelector('i');
@@ -146,24 +136,18 @@
                 icon.classList.add('fa-eye');
             }
         }
-
-        // Add loading state to login button
         const originalLoginAdmin = window.loginAdmin;
         if (originalLoginAdmin) {
             window.loginAdmin = function() {
                 const loginBtn = document.getElementById('loginUser');
                 const btnIcon = loginBtn.querySelector('i');
                 const btnText = loginBtn.childNodes[2];
-                
-                // Set loading state
+
                 loginBtn.disabled = true;
                 btnIcon.className = 'fas fa-spinner';
                 btnText.textContent = ' Logging in...';
-                
-                // Call original function
                 originalLoginAdmin();
-                
-                // Reset button state after 3 seconds (adjust as needed)
+
                 setTimeout(() => {
                     loginBtn.disabled = false;
                     btnIcon.className = 'fas fa-sign-in-alt';
