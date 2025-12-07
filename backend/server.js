@@ -79,7 +79,7 @@ app.post('/otp', async (req, res) => {
 
     try {
         const auth = nodemailer.createTransport({
-            service: "gmail",
+            host: "smtp.gmail.com",
             secure: true,
             port: 465,
             auth: {
