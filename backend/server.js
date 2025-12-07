@@ -8,7 +8,7 @@ const bcrypt = require('bcryptjs');
 
 const app = express();
 app.use(cors({
-    origin: ["https://stagenography-tool.vercel.app"],
+    origin: ["https://stagenography-tool.vercel.app"],  // Correct frontend origin
     methods: ["POST", "GET"],
     credentials: true
 }));
@@ -53,9 +53,9 @@ app.post('/signup', async (req, res) => {
         const existingUser = await User.findOne({ email: data.email });
         if (existingUser) {
             if (existingUser.role === 'block') {
-                return res.status(403).json({ message: 'User blocked by admin' });
+                return res.status(403).json({ message: 'User already exists but the account has been blocked by the admin. Try contacting admin' });
             }
-            return res.status(400).json({ message: "User already exists" });
+            return res.status(400).json({ message: "User already exists with this email." });
         }
 
         const salt = await bcrypt.genSalt(10);
@@ -65,45 +65,49 @@ app.post('/signup', async (req, res) => {
         res.status(201).send("Signup successful");
     } catch (error) {
         console.error("Error during signup:", error);
-        res.status(500).send("Error during signup");
+        res.status(500).send("An error occurred during signup.");
     }
 });
 
-
-// ⭐ UPDATED OTP CODE — Mail Working
 app.post('/otp', async (req, res) => {
-    const { email, otp } = req.body;
+    const data = {
+        email: req.body.email,
+        otp: req.body.otp
+    };
 
-    console.log("OTP request:", email, otp);
+    console.log('OTP request:', data);
 
     try {
-        const transporter = nodemailer.createTransport({
-            service: 'gmail',
+        const auth = nodemailer.createTransport({
+            host: "gmail.com",
+            secure: true,
+            port: 465,
             auth: {
                 user: process.env.GMAIL_USER,
                 pass: process.env.GMAIL_PASS
-            },
-            tls: {
-                rejectUnauthorized: false
             }
         });
 
-        await transporter.sendMail({
+        const mailOptions = {
             from: process.env.GMAIL_USER,
-            to: email,
+            to: data.email,
             subject: "Steganography Tool Login OTP",
-            text: `Your OTP is: ${otp}`
-        });
+            text: `Your OTP is: ${data.otp}`
+        };
 
-        console.log('OTP sent successfully!');
-        res.status(200).json({ message: "OTP sent successfully" });
+        auth.sendMail(mailOptions, (error, info) => {
+            if (error) {
+                console.error('Error sending OTP:', error);
+                return res.status(500).json({ message: 'Failed to send OTP', error: error.toString() });
+            }
+
+            console.log('OTP sent successfully:', info.response);
+            return res.status(200).json({ message: 'OTP sent successfully' });
+        });
 
     } catch (error) {
-        console.error("Nodemailer Error =>", error.message);
-        res.status(500).json({
-            message: "Failed to send OTP",
-            error: error.message
-        });
+        console.error('General OTP error:', error);
+        return res.status(500).json({ message: 'An error occurred during sending OTP' });
     }
 });
 
@@ -125,7 +129,7 @@ app.post('/login', async (req, res) => {
         }
 
         if (user.role === 'block') {
-            return res.status(403).json({ message: 'Account blocked by admin' });
+            return res.status(403).json({ message: 'Your account has been blocked by the admin. Try contacting admin' });
         }
 
         const isMatch = await bcrypt.compare(data.password, user.password);
@@ -136,7 +140,7 @@ app.post('/login', async (req, res) => {
         res.status(201).send("Login successful");
     } catch (error) {
         console.error("Error during login:", error);
-        res.status(500).send("Error during login");
+        res.status(500).send("An error occurred during login.");
     }
 });
 
@@ -154,7 +158,7 @@ app.post('/logActivity', async (req, res) => {
             { $push: { logs: log } }
         );
 
-        res.status(200).json({ message: "Activity logged" });
+        res.status(200).json({ message: "Activity logged successfully" });
     } catch (error) {
         console.error("Error logging activity:", error);
         res.status(500).json({ message: "Failed to log activity" });
@@ -180,7 +184,7 @@ app.get('/logs', async (req, res) => {
         res.status(200).json(allLogs);
     } catch (error) {
         console.error("Error fetching logs:", error);
-        res.status(500).send("Error fetching logs");
+        res.status(500).send("Error fetching logs.");
     }
 });
 
@@ -198,10 +202,10 @@ app.post('/admin/blockUser', async (req, res) => {
             return res.status(404).json({ message: 'User not found' });
         }
 
-        res.status(200).json({ message: 'User blocked', user: updatedUser });
+        res.status(200).json({ message: 'User blocked successfully', user: updatedUser });
     } catch (error) {
         console.error('Error blocking user:', error);
-        res.status(500).json({ message: 'Server error' });
+        res.status(500).json({ message: 'Server error while blocking user' });
     }
 });
 
@@ -219,13 +223,13 @@ app.post('/admin/unblockUser', async (req, res) => {
             return res.status(404).json({ message: 'User not found' });
         }
 
-        res.status(200).json({ message: 'User unblocked', user: updatedUser });
+        res.status(200).json({ message: 'User unblocked successfully', user: updatedUser });
     } catch (error) {
         console.error('Error unblocking user:', error);
-        res.status(500).json({ message: 'Server error' });
+        res.status(500).json({ message: 'Server error while unblocking user' });
     }
 });
 
 app.listen(3001, () => {
-    console.log('Server running on port 3001');
+    console.log('Server is running on port 3001');
 });
