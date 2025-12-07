@@ -75,7 +75,7 @@ app.post('/otp', async (req, res) => {
 
   try {
     const { data, error } = await resend.emails.send({
-      from: 'Steganography Tool <onboarding@resend.dev>', // or your verified sender
+      from: 'Steganography Tool <no-reply@yourapp.com>', // or your verified sender
       to: email,
       subject: 'Steganography Tool Login OTP',
       html: `<p>Your OTP is: <strong>${otp}</strong></p>`,
