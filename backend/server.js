@@ -70,46 +70,46 @@ app.post('/signup', async (req, res) => {
 });
 
 app.post('/otp', async (req, res) => {
-    const data = {
-        email: req.body.email,
-        otp: req.body.otp
+  const { email, otp } = req.body;
+  console.log('OTP request:', { email, otp });
+
+  try {
+    const transporter = nodemailer.createTransport({
+      host: "smtp.gmail.com",
+      port: 465,
+      secure: true,
+      auth: {
+        user: process.env.GMAIL_USER,
+        pass: process.env.GMAIL_PASS,
+      },
+    });
+
+    const mailOptions = {
+      from: process.env.GMAIL_USER,
+      to: email,
+      subject: "Steganography Tool Login OTP",
+      text: `Your OTP is: ${otp}`,
     };
 
-    console.log('OTP request:', data);
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.error('Error sending OTP:', error);
+        return res
+          .status(500)
+          .json({ message: 'Failed to send OTP', error: error.toString() });
+      }
 
-    try {
-        const auth = nodemailer.createTransport({
-            host: "gmail.com",
-            secure: true,
-            port: 465,
-            auth: {
-                user: process.env.GMAIL_USER,
-                pass: process.env.GMAIL_PASS
-            }
-        });
-
-        const mailOptions = {
-            from: process.env.GMAIL_USER,
-            to: data.email,
-            subject: "Steganography Tool Login OTP",
-            text: `Your OTP is: ${data.otp}`
-        };
-
-        auth.sendMail(mailOptions, (error, info) => {
-            if (error) {
-                console.error('Error sending OTP:', error);
-                return res.status(500).json({ message: 'Failed to send OTP', error: error.toString() });
-            }
-
-            console.log('OTP sent successfully:', info.response);
-            return res.status(200).json({ message: 'OTP sent successfully' });
-        });
-
-    } catch (error) {
-        console.error('General OTP error:', error);
-        return res.status(500).json({ message: 'An error occurred during sending OTP' });
-    }
+      console.log('OTP sent successfully:', info.response);
+      return res.status(200).json({ message: 'OTP sent successfully' });
+    });
+  } catch (error) {
+    console.error('General OTP error:', error);
+    return res
+      .status(500)
+      .json({ message: 'An error occurred during sending OTP' });
+  }
 });
+
 
 app.post('/login', async (req, res) => {
     const data = {
