@@ -2,7 +2,7 @@ const express = require("express");
 const mongoose = require('mongoose');
 const cors = require("cors");
 const User = require('./userModel');
-const { Resend } = require('resend');
+const nodemailer = require("nodemailer");
 require('dotenv').config();
 const bcrypt = require('bcryptjs');
 
@@ -24,7 +24,7 @@ const connectDB = async () => {
 };
 
 connectDB();
-const resend = new Resend(process.env.RESEND_API_KEY);
+
 async function insert(userEmail, userPassword, userName, userDOB, role) {
     try {
         await User.create({
@@ -74,23 +74,39 @@ app.post('/otp', async (req, res) => {
   console.log('OTP request:', { email, otp });
 
   try {
-    const { data, error } = await resend.emails.send({
-      from: 'Steganography Tool <no-reply@yourapp.com>', // or your verified sender
-      to: email,
-      subject: 'Steganography Tool Login OTP',
-      html: `<p>Your OTP is: <strong>${otp}</strong></p>`,
+    const transporter = nodemailer.createTransport({
+      host: "smtp.gmail.com",
+      port: 465,
+      secure: true,
+      auth: {
+        user: process.env.GMAIL_USER,
+        pass: process.env.GMAIL_PASS,
+      },
     });
 
-    if (error) {
-      console.error('Error sending OTP via Resend:', error);
-      return res.status(500).json({ message: 'Failed to send OTP' });
-    }
+    const mailOptions = {
+      from: process.env.GMAIL_USER,
+      to: email,
+      subject: "Steganography Tool Login OTP",
+      text: `Your OTP is: ${otp}`,
+    };
 
-    console.log('OTP sent successfully via Resend:', data);
-    return res.status(200).json({ message: 'OTP sent successfully' });
-  } catch (err) {
-    console.error('General OTP error via Resend:', err);
-    return res.status(500).json({ message: 'An error occurred during sending OTP' });
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.error('Error sending OTP:', error);
+        return res
+          .status(500)
+          .json({ message: 'Failed to send OTP', error: error.toString() });
+      }
+
+      console.log('OTP sent successfully:', info.response);
+      return res.status(200).json({ message: 'OTP sent successfully' });
+    });
+  } catch (error) {
+    console.error('General OTP error:', error);
+    return res
+      .status(500)
+      .json({ message: 'An error occurred during sending OTP' });
   }
 });
 
